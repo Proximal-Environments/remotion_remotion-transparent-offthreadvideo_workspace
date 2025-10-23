@@ -83,3 +83,58 @@ EXPOSE 22 3000 9091 8003 9901
 ENV GIT_AUTH_TOKEN=
 
 # CMD inherited from base image - starts SSH + MCP server
+
+
+# Install ffmpeg, chromium, and Python development tools with robust error handling
+RUN apt-get update && \
+    (apt-get install -y --fix-missing \
+        ffmpeg \
+        chromium \
+        python3 \
+        python3-pip \
+        python3-venv \
+        python3-dev \
+        build-essential \
+        libsndfile1 \
+        libfreetype6-dev \
+        libpng-dev \
+        pkg-config || \
+     (echo "First attempt failed, retrying after delay..." && \
+      sleep 30 && \
+      apt-get update && \
+      apt-get install -y --fix-missing \
+        ffmpeg \
+        chromium \
+        python3 \
+        python3-pip \
+        python3-venv \
+        python3-dev \
+        build-essential \
+        libsndfile1 \
+        libfreetype6-dev \
+        libpng-dev \
+        pkg-config)) && \
+    rm -rf /var/lib/apt/lists/*
+
+
+RUN curl -LsSf https://astral.sh/uv/install.sh | sh
+
+RUN uv python install 3.10
+RUN uv venv
+
+RUN uv pip install numpy scipy librosa matplotlib
+
+# Corepack is available globally from the base image symlink
+# Ensure it's accessible on PATH
+RUN command -v corepack && corepack enable
+
+RUN npm i -g pnpm@8.10.2
+    
+ENV BUN_INSTALL=/root/.bun
+ENV PATH="$BUN_INSTALL/bin:$PATH"
+RUN curl -fsSL https://bun.sh/install | bash
+RUN bun -v
+
+RUN pnpm i
+
+RUN pnpm build
