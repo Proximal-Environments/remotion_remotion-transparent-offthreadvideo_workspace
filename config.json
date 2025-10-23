@@ -1,0 +1,10 @@
+{
+    "name": "remotion",
+    "displayName": "Remotion",
+    "description": "Programmatic video editing with React",
+    "baseImage": "node",
+    "localSource": true,
+    "repository": {
+      "url": "file://local"
+    }
+  }
