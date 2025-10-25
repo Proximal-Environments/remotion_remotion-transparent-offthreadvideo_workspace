@@ -41,7 +41,6 @@ export const OffthreadVideoForRendering: React.FC<AllOffthreadVideoProps> = ({
 	src,
 	muted,
 	allowAmplificationDuringRender,
-	transparent,
 	toneMapped,
 	toneFrequency,
 	name,
@@ -157,10 +156,9 @@ export const OffthreadVideoForRendering: React.FC<AllOffthreadVideoProps> = ({
 		return getOffthreadVideoSource({
 			src,
 			currentTime,
-			transparent,
 			toneMapped,
 		});
-	}, [toneMapped, currentTime, src, transparent]);
+	}, [toneMapped, currentTime, src]);
 
 	const [imageSrc, setImageSrc] = useState<SrcAndHandle | null>(null);
 	const {delayRender, continueRender} = useDelayRender();
