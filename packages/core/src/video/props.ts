@@ -81,7 +81,6 @@ type OptionalOffthreadVideoProps = {
 	acceptableTimeShiftInSeconds: undefined | number;
 	allowAmplificationDuringRender: boolean;
 	toneFrequency: number;
-	transparent: boolean;
 	toneMapped: boolean;
 	pauseWhenBuffering: boolean;
 	loopVolumeCurveBehavior: LoopVolumeCurveBehavior;

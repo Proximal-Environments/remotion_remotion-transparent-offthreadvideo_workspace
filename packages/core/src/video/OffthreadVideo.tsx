@@ -97,7 +97,6 @@ export const InnerOffthreadVideo: React.FC<AllOffthreadVideoProps> = (
 	}
 
 	const {
-		transparent,
 		toneMapped,
 		onAutoPlayError,
 		onVideoFrame,
@@ -150,7 +149,6 @@ export const OffthreadVideo: React.FC<RemotionOffthreadVideoProps> = ({
 	style,
 	toneFrequency,
 	toneMapped,
-	transparent,
 	trimAfter,
 	trimBefore,
 	useWebAudioApi,
@@ -193,11 +191,10 @@ export const OffthreadVideo: React.FC<RemotionOffthreadVideoProps> = ({
 			_remotionInternalNativeLoopPassed={
 				_remotionInternalNativeLoopPassed ?? false
 			}
-			endAt={endAt}
-			style={style}
-			toneMapped={toneMapped ?? true}
-			transparent={transparent ?? false}
-			trimAfter={trimAfter}
+		endAt={endAt}
+		style={style}
+		toneMapped={toneMapped ?? true}
+		trimAfter={trimAfter}
 			trimBefore={trimBefore}
 			useWebAudioApi={useWebAudioApi ?? false}
 			volume={volume}
