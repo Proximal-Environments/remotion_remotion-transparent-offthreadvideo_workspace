@@ -8,6 +8,7 @@ mod frame_cache_manager;
 mod get_silent_parts;
 mod get_video_metadata;
 mod global_printer;
+mod image;
 mod logger;
 mod long_running_process;
 mod max_cache_size;
@@ -29,6 +30,8 @@ use memory::get_ideal_maximum_frame_cache_size;
 use std::env;
 
 use payloads::payloads::{CliInputCommand, CliInputCommandPayload};
+
+extern crate png;
 
 fn mainfn() -> Result<(), ErrorWithBacktrace> {
     let args = env::args();
