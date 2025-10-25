@@ -118,7 +118,7 @@ impl OpenedStream {
 
                     let item = FrameCacheItem {
                         resolved_pts: video.pts().expect("pts"),
-                        frame: ScalableFrame::new(frame, self.transparent),
+                        frame: ScalableFrame::new(frame),
                         id: frame_cache_id,
                         asked_time: position,
                         last_used: get_time(),
@@ -389,7 +389,7 @@ impl OpenedStream {
                         };
                         let item = FrameCacheItem {
                             resolved_pts: unfiltered.pts().expect("expected pts"),
-                            frame: ScalableFrame::new(frame, self.transparent),
+                            frame: ScalableFrame::new(frame),
                             id: frame_cache_id,
                             asked_time: target_position,
                             last_used: get_time(),
