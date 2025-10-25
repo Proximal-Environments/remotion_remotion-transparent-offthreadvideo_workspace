@@ -10,6 +10,8 @@ use ffmpeg_next::{
 use crate::{
     errors::ErrorWithBacktrace,
     fix_dimensions,
+    global_printer::_print_verbose,
+    image::get_png_data,
     max_cache_size,
     tone_map::{make_tone_map_filtergraph, FilterGraph},
 };
@@ -44,6 +46,7 @@ pub struct RgbFrame {
 pub struct ScalableFrame {
     pub native_frame: Option<NotRgbFrame>,
     pub rgb_frame: Option<RgbFrame>,
+    pub transparent: bool,
 }
 
 fn get_native_colorspace(native_frame: &NotRgbFrame) -> color::Space {
@@ -57,10 +60,11 @@ fn get_native_colorspace(native_frame: &NotRgbFrame) -> color::Space {
 }
 
 impl ScalableFrame {
-    pub fn new(native_frame: NotRgbFrame) -> Self {
+    pub fn new(native_frame: NotRgbFrame, transparent: bool) -> Self {
         Self {
             native_frame: Some(native_frame),
             rgb_frame: None,
+            transparent,
         }
     }
 
@@ -122,7 +126,7 @@ impl ScalableFrame {
                 }
 
                 let bitmap =
-                    scale_and_make_bitmap(&frame, planes, format, linesize)?;
+                    scale_and_make_bitmap(&frame, planes, format, linesize, self.transparent)?;
 
                 self.rgb_frame = Some(RgbFrame { data: bitmap });
                 self.native_frame = None;
@@ -216,8 +220,26 @@ pub fn scale_and_make_bitmap(
     planes: Vec<Vec<u8>>,
     src_format: Pixel,
     linesize: [i32; 8],
+    transparent: bool,
 ) -> Result<Vec<u8>, ErrorWithBacktrace> {
-    let dst_format: Pixel = Pixel::BGR24;
+    let is_transparent_pixel_format = src_format == Pixel::YUVA420P
+        || src_format == Pixel::YUVA444P10LE
+        || src_format == Pixel::YUVA444P12LE;
+
+    let should_return_transparent = transparent && is_transparent_pixel_format;
+
+    if transparent && !is_transparent_pixel_format {
+        _print_verbose(&format!(
+            "Requested transparent image, but the video {} is not transparent (pixel format {:?}). Returning BMP.",
+            native_frame.original_src,
+            src_format
+        ))?;
+    }
+
+    let dst_format: Pixel = match should_return_transparent {
+        true => Pixel::RGBA,
+        false => Pixel::BGR24,
+    };
 
     let (fixed_width, fixed_height) = fix_dimensions::get_dimensions_from_planes(
         src_format,
@@ -270,7 +292,10 @@ pub fn scale_and_make_bitmap(
         &mut scaled,
     )?;
 
-    let channels = 3usize;
+    let channels = match should_return_transparent {
+        true => 4,
+        false => 3,
+    } as usize;
 
     let (rotated, rotated_width, rotated_height) = match native_frame.rotate {
         Rotate::Rotate90 => rotate_90(
@@ -302,6 +327,10 @@ pub fn scale_and_make_bitmap(
             channels,
         ),
     };
+
+    if should_return_transparent {
+        return get_png_data(&rotated, rotated_width, rotated_height);
+    }
 
     Ok(create_bmp_image_from_frame(
         &rotated,

@@ -13,6 +13,7 @@ import type {Texture} from 'three';
 export type UseOffthreadVideoTextureOptions = {
 	src: string;
 	playbackRate?: number;
+	transparent?: boolean;
 	toneMapped?: boolean;
 	delayRenderRetries?: number;
 	delayRenderTimeoutInMilliseconds?: number;
@@ -21,12 +22,14 @@ export type UseOffthreadVideoTextureOptions = {
 export const useInnerVideoTexture = ({
 	playbackRate,
 	src,
+	transparent,
 	toneMapped,
 	delayRenderRetries,
 	delayRenderTimeoutInMilliseconds,
 }: {
 	playbackRate: number;
 	src: string;
+	transparent: boolean;
 	toneMapped: boolean;
 	delayRenderRetries?: number;
 	delayRenderTimeoutInMilliseconds?: number;
@@ -49,9 +52,10 @@ export const useInnerVideoTexture = ({
 		return NoReactInternals.getOffthreadVideoSource({
 			currentTime,
 			src,
+			transparent,
 			toneMapped,
 		});
-	}, [toneMapped, currentTime, src]);
+	}, [toneMapped, currentTime, src, transparent]);
 
 	const [textLoaderPromise] = useState(
 		() => import('three/src/loaders/TextureLoader.js'),
@@ -118,6 +122,7 @@ export const useInnerVideoTexture = ({
 export function useOffthreadVideoTexture({
 	src,
 	playbackRate = 1,
+	transparent = false,
 	toneMapped = true,
 	delayRenderRetries,
 	delayRenderTimeoutInMilliseconds,
@@ -138,6 +143,7 @@ export function useOffthreadVideoTexture({
 	return useInnerVideoTexture({
 		playbackRate,
 		src,
+		transparent,
 		toneMapped,
 		delayRenderRetries,
 		delayRenderTimeoutInMilliseconds,

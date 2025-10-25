@@ -349,10 +349,11 @@ export const VideoForRendering: React.FC<InnerVideoProps> = ({
 				delayRenderTimeoutInMilliseconds={
 					delayRenderTimeoutInMilliseconds ?? undefined
 				}
-			style={style}
-			allowAmplificationDuringRender
-			toneMapped={fallbackOffthreadVideoProps?.toneMapped ?? true}
-			audioStreamIndex={audioStreamIndex ?? 0}
+				style={style}
+				allowAmplificationDuringRender
+				transparent={fallbackOffthreadVideoProps?.transparent ?? false}
+				toneMapped={fallbackOffthreadVideoProps?.toneMapped ?? true}
+				audioStreamIndex={audioStreamIndex ?? 0}
 				name={name}
 				className={className}
 				onVideoFrame={onVideoFrame}
