@@ -29,8 +29,6 @@ export const extractUrlAndSourceFromUrl = (url: string) => {
 		throw new Error('Did not get `time` parameter');
 	}
 
-	const transparent = params.get('transparent');
-
 	const toneMapped = params.get('toneMapped');
 
 	if (!toneMapped) {
@@ -40,7 +38,6 @@ export const extractUrlAndSourceFromUrl = (url: string) => {
 	return {
 		src,
 		time: parseFloat(time),
-		transparent: transparent === 'true',
 		toneMapped: toneMapped === 'true',
 	};
 };
@@ -103,9 +100,9 @@ export const startOffthreadVideoServer = ({
 				return;
 			}
 
-			const {src, time, transparent, toneMapped} = extractUrlAndSourceFromUrl(
-				req.url,
-			);
+		const {src, time, toneMapped} = extractUrlAndSourceFromUrl(
+			req.url,
+		);
 			response.setHeader('access-control-allow-origin', '*');
 
 			// Prevent caching of the response and excessive disk writes
@@ -153,14 +150,13 @@ export const startOffthreadVideoServer = ({
 						}
 
 						extractStart = Date.now();
-						compositor
-							.executeCommand('ExtractFrame', {
-								src: to,
-								original_src: src,
-								time,
-								transparent,
-								tone_mapped: toneMapped,
-							})
+					compositor
+						.executeCommand('ExtractFrame', {
+							src: to,
+							original_src: src,
+							time,
+							tone_mapped: toneMapped,
+						})
 							.then(resolve)
 							.catch(reject);
 					});
