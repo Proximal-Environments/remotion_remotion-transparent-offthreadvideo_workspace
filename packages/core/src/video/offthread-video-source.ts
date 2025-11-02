@@ -2,12 +2,10 @@ import {getAbsoluteSrc} from '../absolute-src';
 
 export const getOffthreadVideoSource = ({
 	src,
-	transparent,
 	currentTime,
 	toneMapped,
 }: {
 	src: string;
-	transparent: boolean;
 	currentTime: number;
 	toneMapped: boolean;
 }) => {
@@ -15,7 +13,7 @@ export const getOffthreadVideoSource = ({
 		window.remotion_proxyPort
 	}/proxy?src=${encodeURIComponent(
 		getAbsoluteSrc(src),
-	)}&time=${encodeURIComponent(Math.max(0, currentTime))}&transparent=${String(
-		transparent,
-	)}&toneMapped=${String(toneMapped)}`;
+	)}&time=${encodeURIComponent(Math.max(0, currentTime))}&toneMapped=${String(
+		toneMapped,
+	)}`;
 };
