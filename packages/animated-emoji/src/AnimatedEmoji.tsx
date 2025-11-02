@@ -38,13 +38,12 @@ export const AnimatedEmoji = ({
 				(emojiData.durationInSeconds * fps) / playbackRate,
 			)}
 		>
-			<OffthreadVideo
-				{...props}
-				muted
-				transparent
-				playbackRate={playbackRate}
-				src={calculateSrc({emoji, scale, format: isWebkit() ? 'hevc' : 'webm'})}
-			/>
+		<OffthreadVideo
+			{...props}
+			muted
+			playbackRate={playbackRate}
+			src={calculateSrc({emoji, scale, format: isWebkit() ? 'hevc' : 'webm'})}
+		/>
 		</Loop>
 	);
 };
